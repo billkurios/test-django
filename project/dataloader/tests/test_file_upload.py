@@ -19,22 +19,9 @@ class FileUploadCSVTestCase(TestCase):
         with self.captureOnCommitCallbacks(execute=True) as callbacks:
             response = self.client.post(
                 "/upload-file/",
-                {"filepath": "upload/unknow_file.csv"},
+                {"filepath": "project/dataloader/tests/upload/unknow_file.csv"},
             )
         self.assertEqual(response.status_code, 404)  # Not found
-
-    def test_bad_extension(self):
-        """
-        Dans ce cas de test, l'extension du fichier
-        n'est pas .csv
-        La reponse attendu est une erreur
-        """
-        with self.captureOnCommitCallbacks(execute=True) as callbacks:
-            response = self.client.post(
-                "/upload-file/",
-                {"filepath": "upload/other_file.txt"},
-            )
-        self.assertEqual(response.status_code, 400)  # Bad request
 
     def test_good_file_but_no_header(self):
         """
@@ -46,7 +33,7 @@ class FileUploadCSVTestCase(TestCase):
         with self.captureOnCommitCallbacks(execute=True) as callbacks:
             response = self.client.post(
                 "/upload-file/",
-                {"filepath": "upload/no_header_file.csv"},
+                {"filepath": "project/dataloader/tests/upload/no_header_file.csv"},
             )
         self.assertEqual(response.status_code, 201)  # Record created
 
@@ -58,9 +45,9 @@ class FileUploadCSVTestCase(TestCase):
         with self.captureOnCommitCallbacks(execute=True) as callbacks:
             response = self.client.post(
                 "/upload-file/",
-                {"filepath": "upload/empty_file.csv"},
+                {"filepath": "project/dataloader/tests/upload/empty_file.csv"},
             )
-        self.assertEqual(response.status_code, 400)  # Bad request
+        self.assertEqual(response.status_code, 404)  # Bad request
 
     def test_good_file(self):
         """
@@ -69,6 +56,6 @@ class FileUploadCSVTestCase(TestCase):
         with self.captureOnCommitCallbacks(execute=True) as callbacks:
             response = self.client.post(
                 "/upload-file/",
-                {"filepath": "upload/model_file.csv"},
+                {"filepath": "project/dataloader/tests/upload/model_file.csv"},
             )
         self.assertEqual(response.status_code, 201)  # Record created

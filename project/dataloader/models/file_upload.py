@@ -24,6 +24,8 @@ class FileUpload(models.Model):
     def save_csv_file(filepath, quotechar=" ", newline="", delimiter="|"):
         with open(filepath, "r", newline=newline) as csvfile:
             csv_reader = csv.reader(csvfile, delimiter=delimiter, quotechar=quotechar)
+            if not csv_reader:
+                return None
             structure = None
             data = {}
             current_index = 0
@@ -34,6 +36,9 @@ class FileUpload(models.Model):
                 data[current_index] = row
                 current_index += 1
             filename = os.path.basename(filepath).split(".")[0]
+            # It's an empty file
+            if len(list(data.values())) == 0:
+                return None
             # create a new record
             return FileUpload.objects.create(
                 name=filename, type=FileTypeChoices.CSV, structure=structure, data=data

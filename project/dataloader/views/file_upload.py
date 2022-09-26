@@ -17,7 +17,12 @@ class FileUploadCRView(View):
         filepath = request.POST.get("filepath", None)
         if not filepath:
             return JsonResponse({"error": "Unvalid filepath"}, status=400)
-        record = FileUpload.save_csv_file(filepath)
+        try:
+            record = FileUpload.save_csv_file(filepath)
+        except FileNotFoundError:
+            return JsonResponse({"error": "File not found"}, status=404)
+        if not record:
+            return JsonResponse({"error": "Empty file"}, status=404)
         return JsonResponse(
             {
                 "filename": record.name,
